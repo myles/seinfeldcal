@@ -14,27 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import os
+from django.conf.urls.defaults import *
 
-DEBUG = True
-
-ROOT_URLCONF = 'urls'
-
-MIDDLEWARE_CLASSES = (
-	'django.middleware.common.CommonMiddleware',
-	'django.middleware.doc.XViewMiddleware',
-)
-
-INSTALLED_APPS = ()
-
-ROOT_PATH = os.path.dirname(__file__)
-
-TEMPLATE_DIRS = (
-	os.path.join(ROOT_PATH, 'templates'),
-)
-
-MEDIA_URL = '/meida/'
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-	'template_context.google',
+urlpatterns = patterns('views',
+	(r'^add/$', 'calendar_add'),
+	(r'^$', 'index'),
 )

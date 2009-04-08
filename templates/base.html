@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>{% block title %}Seinfeld Calendar{% endblock %}</title>
+</head>
+<body>
+	<div id="header">
+		<h1 id="seinfeld_calendar">Seinfeld Calendar</h1>
+		<ul class="tabs">
+			<li><a href="/">Home</a></li>
+			{% block extra_tabs %}{% endblock %}
+			{% if user %}
+				<li style="float:right"><a href="{{ logout_url }}">Logout</a></li>
+			{% else %}
+				<li style="float:right"><a href="{{ login_url }}">Login</a></li>
+			{% endif %}
+		</ul>
+		<div style="clear:right"></div>
+	</div>
+	<div id="body">
+		{% block content_title %}{% endblock %}
+		{% block content %}{% endblock %}
+	</div>
+	<div if="footer">
+		<p><small>A <a href="http://mylesbraithwaite.com/">Myles Braithwaite</a> website.</small></a>
+	</div>
+</body>
+</html>
