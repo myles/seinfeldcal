@@ -1,8 +1,8 @@
 from google.appengine.ext.db import djangoforms
 
-from models import Calendar
+from models import Event
 
-class CalendarForm(djangoforms.ModelForm):
+class EventForm(djangoforms.ModelForm):
 	class Meta:
-		model = Calendar
+		model = Event
 		exclude = ['owner', 'date_added', 'date_modified']

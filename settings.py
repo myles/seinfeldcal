@@ -33,8 +33,9 @@ TEMPLATE_DIRS = (
 	os.path.join(ROOT_PATH, 'templates'),
 )
 
-MEDIA_URL = '/meida/'
+MEDIA_URL = '/media/'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
 	'template_context.google',
+	'template_context.media',
 )

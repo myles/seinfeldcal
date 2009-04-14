@@ -17,21 +17,11 @@ limitations under the License.
 from google.appengine.ext import db
 from google.appengine.api import users
 
-class Calendar(db.Model):
-	name = db.StringProperty(required=True)
-	slug = db.StringProperty(required=True)
-	
-	owner = db.UserProperty(required=True)
-	
-	date_added = db.DateTimeProperty(auto_now_add=True)
-	date_modified = db.DateTimeProperty(auto_now=True)
-
 class Event(db.Model):
 	name = db.StringProperty(required=False)
 	date = db.DateProperty(required=True)
-	calendar_slug = db.StringProperty(required=True)
 	
-	owner = db.UserProperty(required=True)
+	owner = db.UserProperty()
 	
 	date_added = db.DateTimeProperty(auto_now_add=True)
 	date_modified = db.DateTimeProperty(auto_now=True)

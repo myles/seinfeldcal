@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block extra_tabs %}{% endblock %}
+
+{% block content %}
+	<table class="calendar">
+		<thead>
+			<tr>
+				<th colspan="7" class="monthName"><h2>Calendar for {{ month|date:"F Y" }}</h2></th>
+			</tr>
+			<tr class="dayName">
+			{% for day in headers %}
+				<th scope="col"><span title="{{ day|date:"l" }}">{{ day|date:"l" }}</span></th>
+			{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for week in calendar %}
+			<tr class="{% if forloop.first %}first{% endif %}{% if forloop.last %}last{% endif %}">
+				{% for day in week %}
+				<td class="{% if forloop.first or forloop.last %}weekendDay {% endif %}{% if not day.in_month %}otherMonth {% endif %}{% if day.today %}today {% endif %}{% if day.events %}progressed{% else %}slacked{% endif %}">
+					<h3>{{ day.day|date:"j" }}</h3>
+				</td>
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

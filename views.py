@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import datetime, time
+
 from google.appengine.api import users
 from google.appengine.ext import db
 
@@ -21,39 +23,73 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import Http404, HttpResponseRedirect
 
-from models import Calendar, Event
-from forms import CalendarForm
+from models import Event
 
-def index(request):
+def index(request, year=str(datetime.date.today().year), month=datetime.date.today().strftime('%b').lower()):
 	user = users.get_current_user()
 	
 	if user:
-		template_name = 'calendar_list.html'
-		user_calendars = db.GqlQuery("SELECT * FROM Calendar WHERE owner = :1", user)
+		template_name = 'calendar.html'
+		
+		try:
+			month = datetime.date(*time.strptime(year+month, '%Y%b')[:3])
+		except ValueError:
+			raise Http404
+		
+		if month == datetime.date.today():
+			today = True
+		else:
+			today = False
+		
+		first_day = month.replace(day=1)
+		if first_day.month == 12:
+			last_day = first_day.replace(year=first_day.year + 1, month=1)
+		else:
+			last_day = first_day.replace(month=first_day.month + 1)
+		
+		event_list = db.GqlQuery("SELECT * FROM Event WHERE owner = :user AND date >= :start_date AND date <= :end_date", user=user, start_date=first_day, end_date=last_day)
+		
+		first_weekday = first_day - datetime.timedelta(first_day.weekday())
+		last_weekday = last_day + datetime.timedelta(7 - last_day.weekday())
+		
+		month_cal = []
+		week = []
+		week_headers = []
+
+		i = 0
+		day = first_weekday
+		while day <= last_weekday:
+			if i < 7:
+				week_headers.append(day)
+			cal_day = {}
+			cal_day['day'] = day
+			cal_day['events'] = db.GqlQuery("SELECT * FROM Event WHERE owner = :user AND date = :date", user=user, date=day)
+			if day.month == month.month:
+				cal_day['in_month'] = True
+			else:
+				cal_day['in_month'] = False
+			if day == datetime.date.today():
+				cal_day['today'] = True
+			else:
+				cal_day['today'] = False
+			if day.weekday() == 6 or day.weekday() == 5:
+				cal_day['weekend'] = True
+			else:
+				cal_day['weekend'] = False
+			week.append(cal_day)
+			if day.weekday() == 6:
+				month_cal.append(week)
+				week = []
+			i += 1
+			day += datetime.timedelta(1)
+		
 		context = {
-			'user': user,
-			'calendars': user_calendars,
+			'calendar': month_cal,
+			'headers': week_headers,
+			'month': month,
 		}
-	
 	else:
 		template_name = 'index.html'
 		context = {}
 	
 	return render_to_response(template_name, context, context_instance=RequestContext(request))
-
-def calendar_add(request):
-	user = users.get_current_user()
-	
-	if not user:
-		raise Http404
-	
-	if request.method == 'POST':
-		form = CalendarForm(data=request.POST)
-		if form.is_valid():
-			calendar = form.save(commit=False)
-			calendar.owner = users.get_current_user()
-			calendar.put()
-			HttpResponseRedirect('/%s/' % calendar.slug)
-	else:
-		form = CalendarForm()
-		return render_to_response('calendar_add.html', { 'form': form, 'user': user }, context_instance=RequestContext(request))

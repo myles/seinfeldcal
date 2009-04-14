@@ -17,6 +17,5 @@ limitations under the License.
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('views',
-	(r'^add/$', 'calendar_add'),
 	(r'^$', 'index'),
 )
