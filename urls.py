@@ -17,5 +17,8 @@ limitations under the License.
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('views',
+	(r'^(?P<year>\d{4})/(?P<month>[a-z]{3})/$', 'index'),
+	(r'^(?P<year>\d{4})/$', 'index'),
+	(r'^add/$', 'add'),
 	(r'^$', 'index'),
 )

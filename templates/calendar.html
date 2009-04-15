@@ -1,12 +1,35 @@
 {% extends "base.html" %}
 
-{% block extra_tabs %}{% endblock %}
+{% block extra_head %}
+	<link rel="stylesheet" href="{{ MEDIA_URL }}css/humanmsg.css" type="text/css" media="screen" charset="utf-8">
+	<script type="text/javascript" charset="utf-8" src="{{ MEDIA_URL }}js/jquery.js"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ MEDIA_URL }}js/jquery.easing.js"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ MEDIA_URL }}js/humanmsg.js"></script>
+	<script type="text/javascript" charset="utf-8">
+		function markDate(date) {
+			$.ajax({
+				type: "POST",
+				url: "/add/",
+				data: { date: date },
+				success: function(msg) {
+					// humanMsg.displayMsg(msg);
+				}
+			});
+			$('td#' + date).append('<div class="xmarksthespot"></div>');
+		};
+		
+		$(document).ready(function() {
+			/* TODO Add random image here. */
+			$('td.progressed').append('<div class="xmarksthespot"></div>');
+		});
+	</script>
+{% endblock %}
 
 {% block content %}
 	<table class="calendar">
 		<thead>
 			<tr>
-				<th colspan="7" class="monthName"><h2>Calendar for {{ month|date:"F Y" }}</h2></th>
+				<th colspan="7" class="monthName"><h2>{{ month|date:"F Y" }}</h2></th>
 			</tr>
 			<tr class="dayName">
 			{% for day in headers %}
@@ -18,8 +41,8 @@
 			{% for week in calendar %}
 			<tr class="{% if forloop.first %}first{% endif %}{% if forloop.last %}last{% endif %}">
 				{% for day in week %}
-				<td class="{% if forloop.first or forloop.last %}weekendDay {% endif %}{% if not day.in_month %}otherMonth {% endif %}{% if day.today %}today {% endif %}{% if day.events %}progressed{% else %}slacked{% endif %}">
-					<h3>{{ day.day|date:"j" }}</h3>
+				<td class="{% if forloop.first or forloop.last %}weekendDay {% endif %}{% if not day.in_month %}otherMonth {% endif %}{% if day.today %}today {% endif %}{% if day.events %}progressed{% else %}slacked{% endif %}" id="{{ day.day }}">
+					<h3 onclick="markDate('{{ day.day }}');">{{ day.day|date:"j" }}</h3>
 				</td>
 				{% endfor %}
 			</tr>

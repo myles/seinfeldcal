@@ -21,7 +21,7 @@ from google.appengine.ext import db
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 
 from models import Event
 
@@ -47,7 +47,7 @@ def index(request, year=str(datetime.date.today().year), month=datetime.date.tod
 		else:
 			last_day = first_day.replace(month=first_day.month + 1)
 		
-		event_list = db.GqlQuery("SELECT * FROM Event WHERE owner = :user AND date >= :start_date AND date <= :end_date", user=user, start_date=first_day, end_date=last_day)
+		# event_list = db.GqlQuery("SELECT * FROM Event WHERE owner = :user AND date >= :start_date AND date <= :end_date", user=user, start_date=first_day, end_date=last_day)
 		
 		first_weekday = first_day - datetime.timedelta(first_day.weekday())
 		last_weekday = last_day + datetime.timedelta(7 - last_day.weekday())
@@ -63,7 +63,7 @@ def index(request, year=str(datetime.date.today().year), month=datetime.date.tod
 				week_headers.append(day)
 			cal_day = {}
 			cal_day['day'] = day
-			cal_day['events'] = db.GqlQuery("SELECT * FROM Event WHERE owner = :user AND date = :date", user=user, date=day)
+			cal_day['events'] = db.GqlQuery("SELECT * FROM Event WHERE owner = :user AND date = :date", user=user, date=day).fetch(1)
 			if day.month == month.month:
 				cal_day['in_month'] = True
 			else:
@@ -93,3 +93,15 @@ def index(request, year=str(datetime.date.today().year), month=datetime.date.tod
 		context = {}
 	
 	return render_to_response(template_name, context, context_instance=RequestContext(request))
+
+def add(request):
+	user = users.get_current_user()
+	
+	if request.POST and user:
+		post_date = request.POST.get('date', False)
+		date = datetime.date(*time.strptime(post_date, '%Y-%m-%d')[:3])
+		event = Event(date=date, owner=user)
+		event.put()
+		return HttpResponse("Successed at marking the date %s." % date)
+	
+	return HttpResponse("Failure.")

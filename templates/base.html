@@ -12,20 +12,13 @@
 	<link rel="stylesheet" href="{{ MEDIA_URL }}css/blueprint/plugins/tabs/screen.css" type="text/css" media="screen" charset="utf-8">
 	<link rel="stylesheet" href="{{ MEDIA_URL }}css/blueprint/plugins/forms/screen.css" type="text/css" media="screen" charset="utf-8">
 	<link rel="stylesheet" href="{{ MEDIA_URL }}css/screen.css" type="text/css" media="screen" charset="utf-8">
+	{% block extra_head %}{% endblock %}
 </head>
 <body>
 	<div class="container">
 		<div id="header" class="span-24">
 			<h1 id="seinfeld_calendar">Seinfeld Calendar</h1>
-			<ul class="tabs">
-				<li><a href="/">Home</a></li>
-				{% block extra_tabs %}{% endblock %}
-				{% if user %}
-					<li style="float:right"><a href="{{ logout_url }}">Logout</a></li>
-				{% else %}
-					<li style="float:right"><a href="{{ login_url }}">Login</a></li>
-				{% endif %}
-			</ul>
+			<p class="login_logout">{% if user %}<a href="{{ logout_url }}">Logout</a>{% else %}<a href="{{ login_url }}">Login</a>{% endif %}</p>
 			<div style="clear:right"></div>
 		</div>
 		
