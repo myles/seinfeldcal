@@ -2,27 +2,6 @@
 
 {% block extra_head %}
 	<link rel="stylesheet" href="{{ MEDIA_URL }}css/humanmsg.css" type="text/css" media="screen" charset="utf-8">
-	<script type="text/javascript" charset="utf-8" src="{{ MEDIA_URL }}js/jquery.js"></script>
-	<script type="text/javascript" charset="utf-8" src="{{ MEDIA_URL }}js/jquery.easing.js"></script>
-	<script type="text/javascript" charset="utf-8" src="{{ MEDIA_URL }}js/humanmsg.js"></script>
-	<script type="text/javascript" charset="utf-8">
-		function markDate(date) {
-			$.ajax({
-				type: "POST",
-				url: "/add/",
-				data: { date: date },
-				success: function(msg) {
-					// humanMsg.displayMsg(msg);
-				}
-			});
-			$('td#' + date).append('<div class="xmarksthespot"></div>');
-		};
-		
-		$(document).ready(function() {
-			/* TODO Add random image here. */
-			$('td.progressed').append('<div class="xmarksthespot"></div>');
-		});
-	</script>
 {% endblock %}
 
 {% block content %}
@@ -49,4 +28,28 @@
 			{% endfor %}
 		</tbody>
 	</table>
+{% endblock %}
+
+{% block extra_foot %}
+	<script type="text/javascript" charset="utf-8" src="{{ MEDIA_URL }}js/jquery.js"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ MEDIA_URL }}js/jquery.easing.js"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ MEDIA_URL }}js/humanmsg.js"></script>
+	<script type="text/javascript" charset="utf-8">
+		function markDate(date) {
+			$.ajax({
+				type: "POST",
+				url: "/add/",
+				data: { date: date },
+				success: function(msg) {
+					// humanMsg.displayMsg(msg);
+				}
+			});
+			$('td#' + date).append('<div class="xmarksthespot"></div>');
+		};
+		
+		$(document).ready(function() {
+			/* TODO Add random image here. */
+			$('td.progressed').append('<div class="xmarksthespot"></div>');
+		});
+	</script>
 {% endblock %}
